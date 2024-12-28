@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "505990540703",
+    "project_id": "rephoto-371c9",
+    "storage_bucket": "rephoto-371c9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:505990540703:android:00451a42b7e15dfc3921aa",
+        "android_client_info": {
+          "package_name": "com.thezayin.datemate"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGQnNg0affojD38ExzvrH2LRzOkVGtm64"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

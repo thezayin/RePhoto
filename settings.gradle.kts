@@ -9,6 +9,7 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        maven { url = uri("https://jitpack.io") }
     }
 }
 dependencyResolutionManagement {
@@ -16,10 +17,17 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url = uri("https://jitpack.io") }
     }
 }
 
 rootProject.name = "RePhoto"
 include(":app")
 include(":splash")
-include(":common:assets")
+include(":gallery:data")
+include(":common:framework")
+include(":common:components")
+include(":common:analytics")
+include(":common:values")
+include(":gallery:domain")
+include(":gallery:presentation")

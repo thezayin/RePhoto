@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.thezayin.datemate" />
+                  <option name="mobileSdkAppId" value="1:505990540703:android:00451a42b7e15dfc3921aa" />
+                  <option name="projectId" value="rephoto-371c9" />
+                  <option name="projectNumber" value="505990540703" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
