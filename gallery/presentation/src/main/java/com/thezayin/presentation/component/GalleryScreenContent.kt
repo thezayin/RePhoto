@@ -11,7 +11,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import com.thezayin.presentation.state.GalleryState
+import com.thezayin.values.R
 import ir.kaaveh.sdpcompose.sdp
 
 @Composable
@@ -23,6 +25,7 @@ fun GalleryScreenContent(
     state: GalleryState,
 ) {
     Scaffold(
+        containerColor = colorResource(R.color.black),
         topBar = {
             TopBar(
                 albumsState = state,

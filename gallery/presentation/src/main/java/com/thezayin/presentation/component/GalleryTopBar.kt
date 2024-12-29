@@ -16,8 +16,10 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MenuItemColors
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,10 +29,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import coil.compose.rememberAsyncImagePainter
 import com.thezayin.domain.model.Album
 import com.thezayin.presentation.state.GalleryState
+import com.thezayin.values.R
 import ir.kaaveh.sdpcompose.sdp
 
 @Composable
@@ -39,6 +43,14 @@ fun AlbumDropdownItem(
     onAlbumSelected: (String) -> Unit
 ) {
     DropdownMenuItem(
+        colors = MenuItemColors(
+            textColor = colorResource(R.color.white),
+            trailingIconColor = colorResource(R.color.white),
+            disabledTextColor = colorResource(R.color.white),
+            disabledTrailingIconColor = colorResource(R.color.white),
+            leadingIconColor = colorResource(R.color.white),
+            disabledLeadingIconColor = colorResource(R.color.white),
+        ),
         text = {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
@@ -50,7 +62,7 @@ fun AlbumDropdownItem(
                     contentScale = ContentScale.Crop
                 )
                 Spacer(modifier = Modifier.width(8.sdp))
-                Text(text = album.name)
+                Text(text = album.name, color = colorResource(R.color.white))
             }
         },
         onClick = {
@@ -69,6 +81,9 @@ fun TopBar(
     onAlbumSelected: (String) -> Unit
 ) {
     TopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+          containerColor = colorResource(R.color.black),
+        ),
         title = {
             when {
                 albumsState.isLoadingAlbums -> {
@@ -88,7 +103,7 @@ fun TopBar(
                 }
 
                 else -> {
-                    Text(text = "No Albums Available")
+                    Text(text = "No Albums Available", color = colorResource(R.color.white))
                 }
             }
         },
@@ -97,16 +112,16 @@ fun TopBar(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
-                    tint = Color.White
+                    tint = colorResource(R.color.white)
                 )
             }
         },
         actions = {
             IconButton(onClick = onCameraClick) {
                 Icon(
-                    painter = painterResource(id = com.thezayin.values.R.drawable.ic_camera),
+                    painter = painterResource(id = R.drawable.ic_camera),
                     contentDescription = "Camera",
-                    tint = Color.White
+                    tint = colorResource(R.color.white)
                 )
             }
         },
@@ -138,11 +153,11 @@ fun AlbumDropdownMenu(
                 contentScale = ContentScale.Crop
             )
             Spacer(modifier = Modifier.width(8.sdp))
-            Text(text = album.name, color = Color.White)
+            Text(text = album.name, color = colorResource(R.color.white))
             Icon(
                 imageVector = Icons.Default.ArrowDropDown,
                 contentDescription = "Dropdown",
-                tint = Color.White
+                tint = colorResource(R.color.white)
             )
         }
         DropdownMenu(

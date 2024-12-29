@@ -22,6 +22,8 @@
     <color name="light_orange_2">#fadac5</color>
     <color name="light_orange_3">#FB9F7E</color>
 
+    <color name="button_color">#F1B18B</color>
+
     <color name="green_level_1">#015c4b</color>
     <color name="icon_color">#000000</color>
     <color name="background">#DEDEDE</color>

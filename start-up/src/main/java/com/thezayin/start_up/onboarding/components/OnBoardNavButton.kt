@@ -33,7 +33,7 @@ fun OnBoardNavButton(
             .height(40.sdp),
         shape = RoundedCornerShape(20.sdp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = colorResource(id = R.color.astronaut_blue),
+            containerColor = colorResource(id = R.color.button_color),
         )
     ) {
         Row(

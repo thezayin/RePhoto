@@ -3,6 +3,8 @@ package com.thezayin.rephoto.application
 import android.app.Application
 import com.google.android.gms.ads.MobileAds
 import com.google.firebase.FirebaseApp
+import com.thezayin.background.di.backgroundModule
+import com.thezayin.background_remover.di.backgroundRemoverModule
 import com.thezayin.di.analyticsModule
 import com.thezayin.framework.di.featureModule
 import com.thezayin.framework.notification.NotificationUtil
@@ -26,7 +28,9 @@ class App : Application() {
                 featureModule,
                 analyticsModule,
                 galleryModule,
-                splashModule
+                splashModule,
+                backgroundModule,
+                backgroundRemoverModule
             )
         }
     }

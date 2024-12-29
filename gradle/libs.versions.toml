@@ -1,7 +1,10 @@
 [versions]
 coilCompose = "2.6.0"
 compileSdkVersion = "35"
+image = "1.0.0-beta1"
+kotlinxCoroutinesPlayServices = "1.9.0"
 minSdkVersion = "24"
+playServicesMlkitSubjectSegmentation = "16.0.0-beta1"
 targetSdkVersion = "34"
 
 grizzly = "2.1"
@@ -39,6 +42,7 @@ firebaseMessaging = "24.1.0"
 firebaseInappmessagingDisplay = "21.0.1"
 firebaseConfig = "22.0.1"
 playServicesAds = "23.6.0"
+tensorflowLite = "2.16.1"
 timber = "5.0.1"
 userMessagingPlatform = "3.1.0"
 appcompat = "1.7.0"
@@ -58,6 +62,7 @@ androidx-navigation-compose = { module = "androidx.navigation:navigation-compose
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
 grizzly = { module = "io.github.farimarwat:grizzly", version.ref = "grizzly" }
+image = { module = "com.google.android.odml:image", version.ref = "image" }
 jsoup-jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoupVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -83,6 +88,7 @@ koin-core = { module = "io.insert-koin:koin-core", version.ref ="koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
 koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4", version.ref = "koin-version" }
 
+kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutinesPlayServices" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 
 ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
@@ -106,6 +112,8 @@ firebase-config = { group = "com.google.firebase", name = "firebase-config", ver
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
+play-services-mlkit-subject-segmentation = { module = "com.google.android.gms:play-services-mlkit-subject-segmentation", version.ref = "playServicesMlkitSubjectSegmentation" }
+tensorflow-lite = { module = "org.tensorflow:tensorflow-lite", version.ref = "tensorflowLite" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 user-messaging-platform = { module = "com.google.android.ump:user-messaging-platform", version.ref = "userMessagingPlatform" }
 play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "playServicesAds" }

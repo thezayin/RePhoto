@@ -16,3 +16,6 @@ object SettingScreenNav
 
 @Serializable
 object OnBoardingScreenNav
+
+@Serializable
+object BackgroundRemoverScreenNav
