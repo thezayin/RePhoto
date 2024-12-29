@@ -1,5 +1,6 @@
 package com.thezayin.framework.di
 
+import com.thezayin.framework.pref.PreferencesManager
 import com.thezayin.framework.remote.RemoteConfig
 import com.thezayin.framework.session.SessionManager
 import com.thezayin.framework.session.SessionManagerImpl
@@ -10,4 +11,5 @@ val featureModule = module {
     single<SessionManager> { SessionManagerImpl() }
     single { Json { ignoreUnknownKeys = true } }
     single { RemoteConfig(get()) }
+    single { PreferencesManager(get()) }
 }

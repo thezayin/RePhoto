@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.rememberNavController
-import com.thezayin.datemate.navigation.NavHost
+import com.thezayin.rephoto.navigation.NavHost
 import com.thezayin.rephoto.ui.theme.RePhotoTheme
 
 class MainActivity : ComponentActivity() {

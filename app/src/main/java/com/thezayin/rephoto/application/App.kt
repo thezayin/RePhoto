@@ -7,6 +7,7 @@ import com.thezayin.di.analyticsModule
 import com.thezayin.framework.di.featureModule
 import com.thezayin.framework.notification.NotificationUtil
 import com.thezayin.presentation.di.galleryModule
+import com.thezayin.start_up.di.splashModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -24,7 +25,8 @@ class App : Application() {
             modules(
                 featureModule,
                 analyticsModule,
-                galleryModule
+                galleryModule,
+                splashModule
             )
         }
     }

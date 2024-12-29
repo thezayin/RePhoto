@@ -1,28 +1,39 @@
-package com.thezayin.datemate.navigation
+package com.thezayin.rephoto.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.thezayin.presentation.GalleryScreen
-import com.thezayin.rephoto.navigation.GalleryScreenNav
+import com.thezayin.start_up.onboarding.OnboardingScreen
+import com.thezayin.start_up.splash.SplashScreen
 
 @Composable
 fun NavHost(navController: NavHostController) {
     androidx.navigation.compose.NavHost(
         navController = navController,
-        startDestination = GalleryScreenNav
+        startDestination = SplashScreenNav
     ) {
-//        composable<SplashScreenNav> {
-//            SplashScreen(
-//                onNavigate = {
-//                    navController.navigate(HomeScreenNav)
-//                }
-//            )
-//        }
+        composable<SplashScreenNav> {
+            SplashScreen(
+                navigateToHome = {
+                    navController.navigate(GalleryScreenNav)
+                },
+                navigateToOnboarding = {
+                    navController.navigate(OnBoardingScreenNav)
+                }
+            )
+        }
 
         composable<GalleryScreenNav> {
             GalleryScreen()
         }
 
+        composable<OnBoardingScreenNav> {
+            OnboardingScreen(
+                navigateToHome = {
+                    navController.navigate(GalleryScreenNav)
+                }
+            )
+        }
     }
 }

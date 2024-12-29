@@ -20,7 +20,7 @@
             <option value="$PROJECT_DIR$/gallery/data" />
             <option value="$PROJECT_DIR$/gallery/domain" />
             <option value="$PROJECT_DIR$/gallery/presentation" />
-            <option value="$PROJECT_DIR$/splash" />
+            <option value="$PROJECT_DIR$/start-up" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />
