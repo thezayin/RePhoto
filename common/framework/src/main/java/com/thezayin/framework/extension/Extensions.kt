@@ -3,14 +3,22 @@ package com.thezayin.framework.extension
 import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
+import android.provider.MediaStore
 import android.provider.Settings
 import android.speech.tts.TextToSpeech
 import android.widget.Toast
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -85,4 +93,67 @@ fun createImageFile(context: Context): File {
         ".jpg", /* suffix */
         storageDir /* directory */
     )
+}
+
+/**
+ * Writes the [bitmap] to device Pictures using MediaStore.
+ * If [asPng] = true, uses PNG (with transparency), else JPG.
+ */
+suspend fun saveBitmapToGallery(
+    context: Context,
+    bitmap: Bitmap,
+    asPng: Boolean
+) = withContext(Dispatchers.IO) {
+    val format = if (asPng) Bitmap.CompressFormat.PNG else Bitmap.CompressFormat.JPEG
+    val mimeType = if (asPng) "image/png" else "image/jpeg"
+    val extension = if (asPng) "png" else "jpg"
+
+    val filename = "bg_removed_${System.currentTimeMillis()}.$extension"
+    val fos: OutputStream?
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        // Android Q and above
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
+            put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
+            put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+            put(MediaStore.MediaColumns.IS_PENDING, 1)
+        }
+        val imageCollection = MediaStore.Images.Media
+            .getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+        val contentResolver = context.contentResolver
+
+        val imageUri = contentResolver.insert(imageCollection, contentValues)
+            ?: throw RuntimeException("MediaStore failed to create new record.")
+        fos = contentResolver.openOutputStream(imageUri)
+            ?: throw RuntimeException("Failed to open output stream.")
+
+        bitmap.compress(format, 100, fos)
+        fos.flush()
+        fos.close()
+
+        contentValues.clear()
+        contentValues.put(MediaStore.MediaColumns.IS_PENDING, 0)
+        contentResolver.update(imageUri, contentValues, null, null)
+    } else {
+        // Pre-Android Q
+        val imagesDir = Environment.getExternalStoragePublicDirectory(
+            Environment.DIRECTORY_PICTURES
+        )
+        val imageFile = File(imagesDir, filename)
+
+        fos = FileOutputStream(imageFile)
+        bitmap.compress(format, 100, fos)
+        fos.flush()
+        fos.close()
+
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DATA, imageFile.absolutePath)
+            put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
+        }
+        context.contentResolver.insert(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            contentValues
+        )
+    }
 }

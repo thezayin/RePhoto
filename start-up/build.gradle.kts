@@ -56,6 +56,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation (libs.kotlinx.coroutines.play.services )
 
     //viewmodel and livedata
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
@@ -70,4 +71,9 @@ dependencies {
     implementation(libs.koin.androidx.navigation)
 
     implementation(libs.sdp.compose)
+
+    // On Device Machine Learnings
+    implementation (libs.image)
+    implementation (libs.play.services.mlkit.subject.segmentation)
+    implementation(libs.tensorflow.lite)
 }

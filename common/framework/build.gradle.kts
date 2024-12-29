@@ -73,9 +73,7 @@ dependencies {
 
     //serialization and ktor
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.ktor.client.android)
-    implementation(libs.ktor.client.logging)
-    implementation(libs.ktor.client.serialize)
+
 
     //koin dependency injection
     implementation(libs.koin.core)

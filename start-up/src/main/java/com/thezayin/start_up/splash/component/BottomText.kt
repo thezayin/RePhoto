@@ -33,7 +33,7 @@ fun BottomText(modifier: Modifier, text: Int = R.string.loading_settings) {
             modifier = Modifier
                 .padding(end = 5.sdp)
                 .size(10.sdp),
-            color = colorResource(R.color.primary)
+            color = colorResource(R.color.button_color)
         )
         Text(
             textAlign = TextAlign.Center,

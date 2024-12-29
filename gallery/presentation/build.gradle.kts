@@ -79,12 +79,6 @@ dependencies {
 
     //serialization and ktor
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.ktor.client.android)
-    implementation(libs.ktor.client.logging)
-    implementation(libs.ktor.client.serialize)
-    implementation(libs.ktor.client.cio)
-    implementation(libs.ktor.server.content.negotiation)
-    implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.timber)
 
     implementation (libs.coil.compose)

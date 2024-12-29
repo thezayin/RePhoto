@@ -55,6 +55,8 @@ dependencies {
 
     implementation(project(":gallery:presentation"))
     implementation(project(":start-up"))
+    implementation(project(":feature:background"))
+    implementation(project(":feature:background-remover"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -87,9 +89,6 @@ dependencies {
 
     //serialization and ktor
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.ktor.client.android)
-    implementation(libs.ktor.client.logging)
-    implementation(libs.ktor.client.serialize)
 
     //navigation
     implementation(libs.androidx.navigation.compose)
