@@ -15,16 +15,4 @@ object GalleryScreenNav
 object SettingScreenNav
 
 @Serializable
-object AddBirthdayScreenNav
-
-@Serializable
-object CalculatorScreenNav
-
-@Serializable
-object SavedBirthdayScreenNav
-
-@Serializable
-object GiftIdeasScreenNav
-
-@Serializable
-object RequestPermissionsScreenNav
+object OnBoardingScreenNav

@@ -23,7 +23,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "RePhoto"
 include(":app")
-include(":splash")
+include(":start-up")
 include(":gallery:data")
 include(":common:framework")
 include(":common:components")

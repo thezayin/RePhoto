@@ -2,21 +2,23 @@
     <string name="app_name">SIM Insights</string>
     <string name="ads_title">ad</string>
     <string name="ad">Ad</string>
-    <string name="incorrect_day">Incorrect day</string>
-    <string name="dd">DD</string>
-    <string name="incorrect_date_msg">Incorrect day for the selected month/year</string>
-    <string name="day_required">Day is required</string>
-    <string name="mm">MM</string>
-    <string name="month_required">Month is required</string>
-    <string name="incorrect_month">Incorrect month</string>
-    <string name="year_optional">Note: Year is optional</string>
-    <string name="birth_date">Birthday Date:</string>
-    <string name="enter_name">Enter name</string>
-    <string name="name_error_msg">Name cannot be empty</string>
-    <string name="person_name">Person Name:</string>
-    <string name="more_settings">More settings</string>
     <string name="save">Save</string>
     <string name="back_button">Back</string>
     <string name="unknown_error">Unknown error</string>
-    <string name="birthday_added">Birthday added successfully</string>
+
+    <string name="no_internet_error">No internet connection</string>
+
+    <string name="loading_settings">Loading Settings…</string>
+    <string name="loading">Loading…</string>
+    <string name="finishing_up">Finishing Up…</string>
+    <string name="please_wait">Please wait…</string>
+    <string name="almost_there">Almost There...</string>
+    <string name="enhance">Enhance</string>
+    <string name="enhance_desc">Bring your memories into crystal-clear focus with our Enhance feature!</string>
+
+    <string name="remove_background">Remove Image Backgrounds Easily</string>
+    <string name="remove_background_desc">Create professional, background-free images in seconds.</string>
+
+    <string name="change_background">Give Your Photos a New Background</string>
+    <string name="change_background_desc">Change the background of your photos to make them look more appealing.</string>
 </resources>
