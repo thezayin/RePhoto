@@ -19,3 +19,7 @@ object OnBoardingScreenNav
 
 @Serializable
 object BackgroundRemoverScreenNav
+
+
+@Serializable
+object BackgroundChangerScreenNav

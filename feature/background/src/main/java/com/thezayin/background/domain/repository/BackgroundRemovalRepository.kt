@@ -2,6 +2,7 @@ package com.thezayin.background.domain.repository
 
 import android.graphics.Bitmap
 import android.net.Uri
+import com.thezayin.background.domain.model.BackgroundImages
 
 /**
  * Repository interface for background removal related functionality.
@@ -28,4 +29,11 @@ interface BackgroundRemovalRepository {
      * @return The smoothed bitmap.
      */
     suspend fun smoothBitmap(bitmap: Bitmap, value: Int): Bitmap
+
+    /**
+     * Retrieves a categorized list of background images from Firebase.
+     *
+     * @return An instance of [BackgroundImages] containing categories and their image URLs.
+     */
+    suspend fun getBackgroundImages(): BackgroundImages
 }

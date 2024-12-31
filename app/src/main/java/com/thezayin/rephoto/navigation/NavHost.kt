@@ -3,6 +3,7 @@ package com.thezayin.rephoto.navigation
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import com.thezayin.background_changer.BackgroundChangerScreen
 import com.thezayin.background_remover.BackgroundRemoverScreen
 import com.thezayin.presentation.GalleryScreen
 import com.thezayin.start_up.onboarding.OnboardingScreen
@@ -28,8 +29,16 @@ fun NavHost(navController: NavHostController) {
         composable<GalleryScreenNav> {
             GalleryScreen(
                 onNavigateToNextScreen = {
-                    navController.navigate(BackgroundRemoverScreenNav)
+                    navController.navigate(BackgroundChangerScreenNav)
                 },
+            )
+        }
+
+        composable<BackgroundChangerScreenNav> {
+            BackgroundChangerScreen(
+//                onBack = {
+//                    navController.popBackStack()
+//                },
             )
         }
 

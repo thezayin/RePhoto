@@ -157,3 +157,25 @@ suspend fun saveBitmapToGallery(
         )
     }
 }
+
+/**
+ * Helper function to convert a drawable resource into a Bitmap.
+ * This is now a regular function and can be called from any context.
+ */
+fun convertDrawableToBitmap(context: android.content.Context, drawableRes: Int): Bitmap? {
+    return try {
+        val drawable = context.getDrawable(drawableRes)
+        val bitmap = Bitmap.createBitmap(
+            drawable!!.intrinsicWidth,
+            drawable.intrinsicHeight,
+            Bitmap.Config.ARGB_8888
+        )
+        val canvas = android.graphics.Canvas(bitmap)
+        drawable.setBounds(0, 0, canvas.width, canvas.height)
+        drawable.draw(canvas)
+        bitmap
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+}

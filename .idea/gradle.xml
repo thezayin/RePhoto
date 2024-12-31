@@ -18,6 +18,7 @@
             <option value="$PROJECT_DIR$/common/values" />
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/background" />
+            <option value="$PROJECT_DIR$/feature/background-changer" />
             <option value="$PROJECT_DIR$/feature/background-remover" />
             <option value="$PROJECT_DIR$/gallery" />
             <option value="$PROJECT_DIR$/gallery/data" />

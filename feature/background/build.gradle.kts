@@ -37,6 +37,7 @@ android {
 
 dependencies {
     implementation(project(":common:framework"))
+    implementation(project(":common:values"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -48,6 +49,8 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.timber)
     implementation(libs.firebase.crashlytics.buildtools)
+    implementation(libs.firebase.storage.ktx)
+    implementation(libs.firebase.config.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -74,4 +77,6 @@ dependencies {
     testImplementation(libs.koin.test.junit4)
     implementation(libs.koin.androidx.navigation)
     implementation(libs.sdp.compose)
+    // Gson for JSON parsing
+    implementation ("com.google.code.gson:gson:2.10.1")
 }

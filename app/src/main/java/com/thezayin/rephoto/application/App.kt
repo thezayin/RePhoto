@@ -4,6 +4,7 @@ import android.app.Application
 import com.google.android.gms.ads.MobileAds
 import com.google.firebase.FirebaseApp
 import com.thezayin.background.di.backgroundModule
+import com.thezayin.background_changer.di.backgroundChangerModule
 import com.thezayin.background_remover.di.backgroundRemoverModule
 import com.thezayin.di.analyticsModule
 import com.thezayin.framework.di.featureModule
@@ -30,7 +31,8 @@ class App : Application() {
                 galleryModule,
                 splashModule,
                 backgroundModule,
-                backgroundRemoverModule
+                backgroundRemoverModule,
+                backgroundChangerModule
             )
         }
     }

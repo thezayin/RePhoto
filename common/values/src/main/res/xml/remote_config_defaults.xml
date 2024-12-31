@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defaultsMap>
+    <entry>
+        <key>bg_images</key>
+        <value>
+            {
+            "categories": {
+            "nature": [],
+            "solid": [],
+            "texture": [],
+            "neon": [],
+            "wings": [],
+            "abstract": [],
+            "space": [],
+            "urban": [],
+            "floral": [],
+            "minimalist": [],
+            "backgrounds": []
+            }
+            }
+        </value>
+    </entry>
+</defaultsMap>

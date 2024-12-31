@@ -12,7 +12,7 @@
     <string name="loading">Loading…</string>
     <string name="finishing_up">Finishing Up…</string>
     <string name="please_wait">Please wait…</string>
-    <string name="almost_there">Almost There...</string>
+    <string name="almost_there">Almost There…</string>
     <string name="enhance">Enhance</string>
     <string name="enhance_desc">Bring your memories into crystal-clear focus with our Enhance feature!</string>
 
@@ -21,4 +21,40 @@
 
     <string name="change_background">Give Your Photos a New Background</string>
     <string name="change_background_desc">Change the background of your photos to make them look more appealing.</string>
+
+    <string name="error_load_original_image">Unable to load the selected image. Please try a different image.</string>
+    <string name="error_load_gallery_image">Unable to load image from the gallery. Please select another image.</string>
+    <string name="error_set_background">An error occurred while setting the background. Please try again.</string>
+    <string name="error_apply_smoothing">Unable to apply smoothing at this time. Please try again.</string>
+    <string name="error_fetch_background_images">Failed to fetch background images. Please check your connection and try again.</string>
+    <string name="error_no_base_image">No base image selected. Please select an image to begin.</string>
+    <string name="error_generic">An unexpected error occurred. Please try again.</string>
+
+    <string name="status_loading_base_image">Loading base image…</string>
+    <string name="status_image_processing_complete">Image processing complete.</string>
+    <string name="status_failed_load_process_image">Failed to load or process the image.</string>
+    <string name="status_applying_background">Applying selected background…</string>
+    <string name="status_background_applied_successfully">Background applied successfully.</string>
+    <string name="status_applying_drawable_background">Applying drawable background…</string>
+    <string name="status_applying_smoothing">Applying smoothing…</string>
+    <string name="status_smoothing_applied">Smoothing applied.</string>
+    <string name="status_showing_base_image">Showing base image.</string>
+    <string name="status_showing_processed_image">Showing processed image.</string>
+    <string name="content_description_settings">Settings</string>
+    <string name="content_description_processed_image">Processed Image</string>
+    <string name="label_edge_smoothing">Edge Smoothing</string>
+    <string name="label_smoothing_level">Smoothing Level: %1$d</string>
+    <string name="content_description_compare">Compare</string>
+    <string name="error_message_format">Error: %1$s</string>
+    <string name="label_gallery">Gallery</string>
+    <string name="label_background">Background</string>
+    <string name="label_more">More</string>
+    <string name="content_description_background_image">Background Image</string>
+    <string name="content_description_base_image">Base Image</string>
+
+    <string-array name="loading_steps">
+        <item>AI is analyzing the image…</item>
+        <item>Removing background…</item>
+        <item>Finalizing…</item>
+    </string-array>
 </resources>
