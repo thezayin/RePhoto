@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.thezayin.background_changer.action.ChangerIntent
@@ -13,6 +14,8 @@ import org.koin.compose.koinInject
 
 @Composable
 fun BackgroundChangerScreen(
+    onBackClick: () -> Unit,
+    onApplyClick: () -> Unit,
     viewModel: BackgroundChangerViewModel = koinInject()
 ) {
     val state by viewModel.state.collectAsState()
@@ -26,8 +29,15 @@ fun BackgroundChangerScreen(
         }
     )
 
+    LaunchedEffect(key1 = Unit) {
+        if (state.navigateToNextScreen) {
+            onApplyClick()
+        }
+    }
+
     BGScreenContent(
         state = state,
+        onBackClick = onBackClick,
         setDrawableBackground = { drawableBitmap ->
             viewModel.handleIntent(ChangerIntent.SelectDrawableImage(drawableBitmap))
         },
@@ -59,6 +69,9 @@ fun BackgroundChangerScreen(
         },
         onLaunchGallery = {
             imagePickerLauncher.launch("image/*")
+        },
+        onApplyChanges = {
+            viewModel.handleIntent(ChangerIntent.ApplyChanges)
         }
     )
 }

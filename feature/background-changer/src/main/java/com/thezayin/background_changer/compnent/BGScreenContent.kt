@@ -20,9 +20,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import com.thezayin.background_changer.component.BGSmoothingBottomSheet
 import com.thezayin.background_changer.state.ChangerViewState
 import com.thezayin.values.R
+import ir.kaaveh.sdpcompose.sdp
 import ir.kaaveh.sdpcompose.ssp
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,6 +40,8 @@ fun BGScreenContent(
     onImageRotationChange: (Float) -> Unit,
     applySmoothing: (Float) -> Unit,
     onLaunchGallery: () -> Unit,
+    onApplyChanges: () -> Unit,
+    onBackClick: () -> Unit
 ) {
     var isBottomSheetVisible by remember { mutableStateOf(false) }
     var selectedCategory by remember { mutableStateOf<String?>(null) }
@@ -48,7 +52,11 @@ fun BGScreenContent(
 
     Scaffold(
         topBar = {
-            // Optional: Add a TopBar if needed
+            BGTopBar(
+                onBackClick = onBackClick,
+                onApplyClick = onApplyChanges,
+                isApplyEnabled = !state.isLoading && (state.processedImage != null || state.backgroundImage != null)
+            )
         },
         containerColor = colorResource(R.color.black)
     ) { padding ->
@@ -70,9 +78,12 @@ fun BGScreenContent(
                         id = R.string.error_message_format,
                         state.errorMessage ?: stringResource(id = R.string.error_generic)
                     ),
-                    modifier = Modifier.align(Alignment.Center),
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(20.sdp),
                     color = Color.Red,
-                    fontSize = 16.ssp
+                    fontSize = 12.ssp,
+                    textAlign = TextAlign.Center
                 )
             }
 

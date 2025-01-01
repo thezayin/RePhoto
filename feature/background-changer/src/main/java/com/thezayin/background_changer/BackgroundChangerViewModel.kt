@@ -7,7 +7,9 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thezayin.background.domain.usecase.GetBackgroundImagesUseCase
+import com.thezayin.background.domain.usecase.MergeImagesUseCase
 import com.thezayin.background.domain.usecase.RemoveBackgroundUseCase
+import com.thezayin.background.domain.usecase.SaveImageUseCase
 import com.thezayin.background.domain.usecase.SmoothImageUseCase
 import com.thezayin.background_changer.action.ChangerIntent
 import com.thezayin.background_changer.state.ChangerViewState
@@ -29,6 +31,8 @@ class BackgroundChangerViewModel(
     private val removeBackgroundUseCase: RemoveBackgroundUseCase,
     private val getBackgroundImagesUseCase: GetBackgroundImagesUseCase,
     private val smoothImageUseCase: SmoothImageUseCase,
+    private val mergeImagesUseCase: MergeImagesUseCase,
+    private val saveImageUseCase: SaveImageUseCase,
     private val application: Application
 ) : ViewModel() {
 
@@ -54,6 +58,8 @@ class BackgroundChangerViewModel(
             is ChangerIntent.ShowBaseImage -> showBaseImage()
             is ChangerIntent.HideBaseImage -> hideBaseImage()
             is ChangerIntent.ChangeSmoothing -> changeSmoothing(intent.smoothingValue)
+            is ChangerIntent.ApplyChanges -> applyChanges()
+            ChangerIntent.NavigateToNextScreen -> navigateToNextScreen()
         }
     }
 
@@ -381,5 +387,89 @@ class BackgroundChangerViewModel(
                 )
             }
         }
+    }
+
+    /**
+     * Apply the changes by merging images, saving, and navigating.
+     */
+    private fun applyChanges() {
+        viewModelScope.launch {
+            val background = _state.value.backgroundImage
+            val processed = _state.value.processedImage
+
+            if (processed == null) {
+                _state.update {
+                    it.copy(
+                        errorMessage = application.getString(R.string.error_generic),
+                        isError = true
+                    )
+                }
+                return@launch
+            }
+
+            _state.update {
+                it.copy(
+                    isLoading = true,
+                    statusText = application.getString(R.string.status_applying_changes)
+                )
+            }
+
+            // Merge images with transformations if background is present
+            val mergedBitmap = mergeImagesUseCase(
+                background = background,
+                processed = processed,
+                scale = _state.value.imageScale,
+                offsetX = _state.value.imageOffsetX,
+                offsetY = _state.value.imageOffsetY,
+                rotation = _state.value.imageRotation
+            )
+
+            if (mergedBitmap != null) {
+                // Save the merged bitmap to internal storage
+                val filename = "merged_image_${System.currentTimeMillis()}"
+                val savedUri = saveImageUseCase(
+                    bitmap = mergedBitmap,
+                    filename = filename
+                )
+
+                if (savedUri != null) {
+                    // Update the base image in SessionManager
+                    sessionManager.setBaseImage(savedUri)
+
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            statusText = application.getString(R.string.status_changes_applied),
+                            processedImage = null,
+                            backgroundImage = null,
+                            isShowingBaseImage = false
+                        )
+                    }
+
+                    // Emit navigation event
+                    handleIntent(ChangerIntent.NavigateToNextScreen)
+                } else {
+                    _state.update {
+                        it.copy(
+                            errorMessage = application.getString(R.string.error_saving_image),
+                            isError = true,
+                            isLoading = false
+                        )
+                    }
+                }
+            } else {
+                _state.update {
+                    it.copy(
+                        errorMessage = application.getString(R.string.error_merging_images),
+                        isError = true,
+                        isLoading = false
+                    )
+                }
+            }
+        }
+    }
+
+    private fun navigateToNextScreen() {
+        _state.update { it.copy(navigateToNextScreen = true) }
     }
 }

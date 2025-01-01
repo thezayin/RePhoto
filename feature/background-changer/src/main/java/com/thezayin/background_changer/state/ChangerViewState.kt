@@ -18,5 +18,6 @@ data class ChangerViewState(
     val imageOffsetX: Float = 0f,
     val imageOffsetY: Float = 0f,
     val imageRotation: Float = 0f,
-    val smoothingValue: Float = 0f
+    val smoothingValue: Float = 0f,
+    val navigateToNextScreen: Boolean = false
 )

@@ -36,9 +36,12 @@ fun NavHost(navController: NavHostController) {
 
         composable<BackgroundChangerScreenNav> {
             BackgroundChangerScreen(
-//                onBack = {
-//                    navController.popBackStack()
-//                },
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                onApplyClick = {
+
+                }
             )
         }
 

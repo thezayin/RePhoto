@@ -30,6 +30,11 @@
     <string name="error_no_base_image">No base image selected. Please select an image to begin.</string>
     <string name="error_generic">An unexpected error occurred. Please try again.</string>
 
+    <string name="status_changes_applied">Changes applied successfully</string>
+    <string name="error_missing_images">Background or processed image is missing</string>
+    <string name="error_saving_image">Failed to save merged image</string>
+    <string name="error_merging_images">Failed to merge images</string>
+
     <string name="status_loading_base_image">Loading base image…</string>
     <string name="status_image_processing_complete">Image processing complete.</string>
     <string name="status_failed_load_process_image">Failed to load or process the image.</string>
@@ -51,7 +56,10 @@
     <string name="label_more">More</string>
     <string name="content_description_background_image">Background Image</string>
     <string name="content_description_base_image">Base Image</string>
-
+    <string name="content_description_back">Back</string>
+    <string name="content_description_apply">Apply</string>
+    <string name="apply">Apply</string>
+    <string name="status_applying_changes">Applying changes…</string>
     <string-array name="loading_steps">
         <item>AI is analyzing the image…</item>
         <item>Removing background…</item>

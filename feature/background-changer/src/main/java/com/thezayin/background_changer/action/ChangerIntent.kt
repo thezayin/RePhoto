@@ -13,4 +13,6 @@ sealed class ChangerIntent {
     object ShowBaseImage : ChangerIntent()
     object HideBaseImage : ChangerIntent()
     data class ChangeSmoothing(val smoothingValue: Float) : ChangerIntent()
+    object ApplyChanges : ChangerIntent()
+    object NavigateToNextScreen : ChangerIntent()
 }

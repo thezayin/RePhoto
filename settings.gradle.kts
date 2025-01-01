@@ -8,6 +8,7 @@ pluginManagement {
             }
         }
         mavenCentral()
+        jcenter()
         gradlePluginPortal()
         maven { url = uri("https://jitpack.io") }
     }
@@ -17,6 +18,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        jcenter()
         maven { url = uri("https://jitpack.io") }
     }
 }
@@ -34,3 +36,4 @@ include(":gallery:presentation")
 include(":feature:background")
 include(":feature:background-remover")
 include(":feature:background-changer")
+include(":feature:enhance")

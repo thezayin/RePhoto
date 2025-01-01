@@ -2,7 +2,6 @@ package com.thezayin.background_changer.compnent
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,8 +45,7 @@ fun BGProcessedTools(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f),
-            contentAlignment = Alignment.Center
+                .weight(1f), contentAlignment = Alignment.Center
         ) {
             if (!isShowingBaseImage) {
                 backgroundImage?.let {
@@ -95,22 +92,17 @@ fun BGProcessedTools(
             verticalAlignment = Alignment.CenterVertically
         ) {
             BGSmoothingIcon(
-                isSettingsOpen = isSettingsOpen,
-                onToggleSettings = onToggleSettings
+                isSettingsOpen = isSettingsOpen, onToggleSettings = onToggleSettings
             )
             BGCompareIcon(
-                onPressStart = onComparePressStart,
-                onPressEnd = onComparePressEnd
+                onPressStart = onComparePressStart, onPressEnd = onComparePressEnd
             )
         }
 
         BGOptions(
-            onSelectGallery = onGalleryLaunch,
-            onSelectBackground = { bitmap ->
+            onSelectGallery = onGalleryLaunch, onSelectBackground = { bitmap ->
                 setDrawableBackground(bitmap)
-            },
-            onMore = onMore,
-            isLoading = isLoading
+            }, onMore = onMore, isLoading = isLoading
         )
     }
 }
