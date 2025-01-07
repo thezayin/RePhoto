@@ -55,7 +55,9 @@ dependencies {
 
     implementation(project(":gallery:presentation"))
     implementation(project(":start-up"))
+    implementation(project(":feature:enhance"))
     implementation(project(":feature:background"))
+    implementation(project(":feature:background-blur"))
     implementation(project(":feature:background-remover"))
     implementation(project(":feature:background-changer"))
 

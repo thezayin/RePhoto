@@ -1,7 +1,9 @@
 package com.thezayin.background.data.segmentation
 
 import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
 import androidx.annotation.ColorInt
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.segmentation.subject.Subject
@@ -30,6 +32,137 @@ object SubjectSegmentationHelper {
             )
             .build()
     )
+
+    /**
+     * Generates a unified segmentation mask for the given bitmap using confidence masks.
+     *
+     * @param originalBitmap The original image Bitmap.
+     * @return The segmentation mask Bitmap where the subject is opaque and the background is transparent.
+     */
+    suspend fun getSegmentationMask(originalBitmap: Bitmap): Bitmap? =
+        withContext(Dispatchers.Default) {
+            try {
+                Timber.tag(TAG).d("Starting segmentation mask generation.")
+
+                // Prepare InputImage
+                val inputImage = InputImage.fromBitmap(originalBitmap, 0)
+
+                // Perform subject segmentation
+                val segmentationResult: SubjectSegmentationResult =
+                    client.process(inputImage).await()
+
+                // Generate the segmentation mask
+                val maskBitmap = createUnifiedMask(
+                    originalBitmap.width,
+                    originalBitmap.height,
+                    segmentationResult.subjects
+                )
+
+                Timber.tag(TAG).d("Segmentation mask generated successfully.")
+                maskBitmap
+            } catch (e: Exception) {
+                Timber.tag(TAG).e("Error generating segmentation mask: ${e.message}")
+                null
+            }
+        }
+
+    /**
+     * Creates a unified mask bitmap from all detected subjects' confidence masks.
+     *
+     * @param width The width of the original image.
+     * @param height The height of the original image.
+     * @param subjects The list of detected subjects.
+     * @return The unified segmentation mask Bitmap.
+     */
+    private fun createUnifiedMask(width: Int, height: Int, subjects: List<Subject>): Bitmap {
+        Timber.tag(TAG).d("Creating unified mask from ${subjects.size} subjects.")
+        val maskBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(maskBitmap)
+        val paint = Paint().apply {
+            color = Color.WHITE
+            style = Paint.Style.FILL
+            isAntiAlias = true
+        }
+
+        // Iterate through each subject and overlay their confidence masks
+        for (subject in subjects) {
+            val confidenceMask = subject.confidenceMask
+            if (confidenceMask == null) {
+                Timber.tag(TAG).e("Subject confidence mask is null.")
+                continue
+            }
+
+            try {
+                // Convert confidence mask to bitmap
+                val subjectMaskBitmap = convertConfidenceMaskToBitmap(
+                    confidenceMask,
+                    subject.width,
+                    subject.height
+                )
+                // Draw the subject mask at the correct position
+                canvas.drawBitmap(
+                    subjectMaskBitmap,
+                    subject.startX.toFloat(),
+                    subject.startY.toFloat(),
+                    paint
+                )
+                Timber.tag(TAG).d("Subject mask merged successfully.")
+            } catch (e: Exception) {
+                Timber.tag(TAG).e("Error merging subject mask: ${e.message}")
+            }
+        }
+        return maskBitmap
+    }
+
+
+    /**
+     * Converts a confidence mask FloatBuffer to a grayscale Bitmap.
+     *
+     * @param mask The confidence mask FloatBuffer.
+     * @param maskWidth The width of the subject's mask.
+     * @param maskHeight The height of the subject's mask.
+     * @return The grayscale confidence bitmap.
+     */
+    private fun convertConfidenceMaskToBitmap(
+        mask: java.nio.FloatBuffer,
+        maskWidth: Int,
+        maskHeight: Int
+    ): Bitmap {
+        try {
+            // Rewind the buffer to the beginning before reading
+            mask.rewind()
+
+            // Log buffer details
+            Timber.tag(TAG)
+                .d("convertConfidenceMaskToBitmap: Buffer capacity: ${mask.capacity()}, Remaining: ${mask.remaining()}")
+
+            val expectedFloats = maskWidth * maskHeight
+            if (mask.remaining() < expectedFloats) {
+                Timber.tag(TAG)
+                    .e("convertConfidenceMaskToBitmap: Not enough floats in buffer. Expected: $expectedFloats, Available: ${mask.remaining()}")
+                throw IllegalStateException("Insufficient floats in confidence mask buffer.")
+            }
+
+            val confidencePixels = FloatArray(expectedFloats)
+            mask.get(confidencePixels)
+
+            val bitmap = Bitmap.createBitmap(maskWidth, maskHeight, Bitmap.Config.ARGB_8888)
+            val pixels = IntArray(maskWidth * maskHeight)
+
+            for (i in confidencePixels.indices) {
+                val confidence = confidencePixels[i]
+                val alpha = (confidence * 255).toInt().coerceIn(0, 255)
+                // White color with varying alpha based on confidence
+                pixels[i] = Color.argb(alpha, 255, 255, 255)
+            }
+
+            bitmap.setPixels(pixels, 0, maskWidth, 0, 0, maskWidth, maskHeight)
+            return bitmap
+        } catch (e: Exception) {
+            Timber.tag(TAG).e("convertConfidenceMaskToBitmap: Exception - ${e.message}")
+            throw e
+        }
+    }
 
     /**
      * Removes the background from the provided bitmap using ML Kit's Subject Segmentation.
@@ -139,12 +272,10 @@ object SubjectSegmentationHelper {
         imageWidth: Int
     ): IntArray {
         @ColorInt val colors = IntArray(imageWidth * imageHeight) { Color.TRANSPARENT }
-
         for ((index, subject) in subjects.withIndex()) {
             val rgb = COLORS[index % COLORS.size]
             val subjectColor = Color.argb(128, rgb[0], rgb[1], rgb[2])
             val mask = subject.confidenceMask ?: continue
-
             for (j in 0 until subject.height) {
                 for (i in 0 until subject.width) {
                     if (mask.get() > 0.5) {
@@ -159,7 +290,6 @@ object SubjectSegmentationHelper {
                     }
                 }
             }
-
             mask.rewind()
         }
         return colors

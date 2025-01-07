@@ -9,6 +9,9 @@ object SplashScreenNav
 object HomeScreenNav
 
 @Serializable
+object EnhanceScreenNav
+
+@Serializable
 object GalleryScreenNav
 
 @Serializable
@@ -23,3 +26,6 @@ object BackgroundRemoverScreenNav
 
 @Serializable
 object BackgroundChangerScreenNav
+
+@Serializable
+object BackgroundBlurScreenNav

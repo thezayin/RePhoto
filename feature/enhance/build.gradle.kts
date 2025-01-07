@@ -1,3 +1,5 @@
+import org.gradle.internal.declarativedsl.parsing.main
+
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -33,9 +35,16 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+
+    sourceSets {
+        getByName("main") {
+            assets.srcDirs("src/main/assets")
+        }
+    }
 }
 
 dependencies {
+
     implementation(project(":common:analytics"))
     implementation(project(":common:values"))
     implementation(project(":common:framework"))
@@ -80,8 +89,6 @@ dependencies {
     implementation(libs.accompanist.permissions)
 
     implementation(libs.sdp.compose)
-
-    implementation ("org.pytorch:pytorch_android:2.1.0")
-    implementation ("org.pytorch:pytorch_android_torchvision:2.1.0")
-
+    implementation (libs.tensorflow.lite)
+    implementation(libs.tensorflow.lite.gpu)
 }

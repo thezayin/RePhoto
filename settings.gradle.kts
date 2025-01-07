@@ -11,6 +11,7 @@ pluginManagement {
         jcenter()
         gradlePluginPortal()
         maven { url = uri("https://jitpack.io") }
+        maven { url =uri("https://art-prod.img.ly/artifactory/imgly") }
     }
 }
 dependencyResolutionManagement {
@@ -20,6 +21,7 @@ dependencyResolutionManagement {
         mavenCentral()
         jcenter()
         maven { url = uri("https://jitpack.io") }
+        maven { url =uri("https://art-prod.img.ly/artifactory/imgly") }
     }
 }
 
@@ -37,3 +39,5 @@ include(":feature:background")
 include(":feature:background-remover")
 include(":feature:background-changer")
 include(":feature:enhance")
+include(":feature:background-blur")
+include(":feature:editor")

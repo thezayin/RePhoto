@@ -3,8 +3,10 @@ package com.thezayin.rephoto.navigation
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import com.thezayin.background_blur.BackgroundBlurScreen
 import com.thezayin.background_changer.BackgroundChangerScreen
 import com.thezayin.background_remover.BackgroundRemoverScreen
+import com.thezayin.enhance.presentation.EnhanceScreen
 import com.thezayin.presentation.GalleryScreen
 import com.thezayin.start_up.onboarding.OnboardingScreen
 import com.thezayin.start_up.splash.SplashScreen
@@ -26,10 +28,18 @@ fun NavHost(navController: NavHostController) {
             )
         }
 
+        composable<BackgroundBlurScreenNav> {
+            BackgroundBlurScreen(
+                onBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
         composable<GalleryScreenNav> {
             GalleryScreen(
                 onNavigateToNextScreen = {
-                    navController.navigate(BackgroundChangerScreenNav)
+                    navController.navigate(EnhanceScreenNav)
                 },
             )
         }
@@ -50,6 +60,12 @@ fun NavHost(navController: NavHostController) {
                 onBack = {
                     navController.popBackStack()
                 },
+            )
+        }
+
+        composable<EnhanceScreenNav> {
+            EnhanceScreen(
+
             )
         }
 

@@ -60,6 +60,26 @@
     <string name="content_description_apply">Apply</string>
     <string name="apply">Apply</string>
     <string name="status_applying_changes">Applying changes…</string>
+
+    <string name="status_loading_image">Loading image…</string>
+    <string name="status_image_loaded">Image loaded</string>
+    <string name="status_applying_blur">Applying blur…</string>
+    <string name="status_blur_applied">Blur applied</string>
+    <string name="status_smoothing_edges">Smoothing edges…</string>
+    <string name="status_edges_smoothed">Edges smoothed</string>
+    <string name="status_saving_image">Saving image…</string>
+    <string name="status_image_saved_png">Image saved as PNG!</string>
+    <string name="status_image_saved_jpeg">Image saved as JPEG!</string>
+
+    <string name="error_load_image">Unable to load the selected image. Please try a different image.</string>
+    <string name="error_apply_blur">Failed to apply blur.</string>
+    <string name="error_smooth_edges">Failed to smooth edges.</string>
+    <string name="error_no_image_to_save">No image to save.</string>
+    <string name="error_save_image">Failed to save image.</string>
+
+    <string name="edge_smoothness_label">Edge Smoothness: %1$d</string>
+    <string name="blur_intensity_label">Blur Intensity: %1$d</string>
+
     <string-array name="loading_steps">
         <item>AI is analyzing the image…</item>
         <item>Removing background…</item>
