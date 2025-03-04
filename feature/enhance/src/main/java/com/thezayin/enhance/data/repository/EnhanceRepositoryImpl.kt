@@ -2,140 +2,114 @@ package com.thezayin.enhance.data.repository
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Matrix
+import android.util.SparseArray
+import com.huawei.hms.mlsdk.common.MLException
+import com.huawei.hms.mlsdk.common.MLFrame
+import com.huawei.hms.mlsdk.imagesuperresolution.MLImageSuperResolutionAnalyzer
+import com.huawei.hms.mlsdk.imagesuperresolution.MLImageSuperResolutionAnalyzerFactory
+import com.huawei.hms.mlsdk.imagesuperresolution.MLImageSuperResolutionAnalyzerSetting
+import com.huawei.hms.mlsdk.imagesuperresolution.MLImageSuperResolutionResult
 import com.thezayin.enhance.domain.model.EnhancementType
 import com.thezayin.enhance.domain.repository.EnhanceRepository
-import org.tensorflow.lite.Interpreter
-import android.util.Log
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-import kotlin.math.min
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class EnhanceRepositoryImpl(
     private val context: Context
 ) : EnhanceRepository {
 
-    // Load TFLite models lazily
-    private val basicModel: Interpreter by lazy { loadModel("esrgan.tflite") }
-//    private val basicModel: Interpreter by lazy { loadModel("srgan.tflite") }
-    private val plusModel: Interpreter by lazy { loadModel("edsr_x2.tflite") }
-    private val proModel: Interpreter by lazy { loadModel("esrgan.tflite") }
-    private val deblurModel: Interpreter by lazy { loadModel("wdsr.tflite") }
+    // Default analyzer (1x super-resolution).
+    private val analyzer: MLImageSuperResolutionAnalyzer by lazy {
+        MLImageSuperResolutionAnalyzerFactory
+            .getInstance()
+            .imageSuperResolutionAnalyzer
+    }
 
     override suspend fun processImage(inputBitmap: Bitmap, type: EnhancementType): Bitmap {
-        return when (type) {
-            EnhancementType.BASIC -> processBasicModel(inputBitmap)
-            EnhancementType.PLUS -> processPlusModel(inputBitmap)
-            EnhancementType.PRO -> processProModel(inputBitmap)
-            EnhancementType.DEBLUR -> processDeblurModel(inputBitmap)
-        }
-    }
+        return withContext(Dispatchers.IO) {
+            try {
+                // 1) Possibly downscale the input if using 3x super-resolution:
+                val preparedBitmap = when (type) {
+                    EnhancementType.PLUS, EnhancementType.PRO -> {
+                        // 3x super-resolution limit is wide edge <= 800 px (per logs/docs).
+                        ensureMaxEdge(inputBitmap, 800)
+                    }
+                    else -> {
+                        // 1x / DEBLUR can usually handle up to 1024 px, or no limit if docs differ.
+                        inputBitmap
+                    }
+                }
 
-    private fun loadModel(fileName: String): Interpreter {
-        Log.d("EnhanceRepositoryImpl", "Loading TFLite model: $fileName")
-        val fileDescriptor = context.assets.openFd(fileName)
-        val inputStream = fileDescriptor.createInputStream()
-        val byteArray = inputStream.readBytes()
-        val byteBuffer = ByteBuffer.allocateDirect(byteArray.size).apply {
-            order(ByteOrder.nativeOrder())
-            put(byteArray)
-        }
-        Log.d("EnhanceRepositoryImpl", "Model loaded successfully: $fileName")
-        return Interpreter(byteBuffer)
-    }
+                // 2) Create MLFrame from the (possibly downscaled) bitmap.
+                val frame = MLFrame.Creator().setBitmap(preparedBitmap).create()
 
-    private fun processBasicModel(inputBitmap: Bitmap): Bitmap {
-        Log.d("EnhanceRepositoryImpl", "Processing with BASIC model")
-        return enhanceImage(inputBitmap, basicModel)
-    }
+                // 3) Analyze based on the type.
+                val results: SparseArray<MLImageSuperResolutionResult> = when (type) {
+                    EnhancementType.BASIC -> {
+                        // 1x super-resolution
+                        analyzer.analyseFrame(frame)
+                    }
+                    EnhancementType.PLUS, EnhancementType.PRO -> {
+                        // 3x super-resolution
+                        val setting = MLImageSuperResolutionAnalyzerSetting.Factory()
+                            .setScale(MLImageSuperResolutionAnalyzerSetting.ISR_SCALE_3X)
+                            .create()
+                        val customAnalyzer = MLImageSuperResolutionAnalyzerFactory
+                            .getInstance()
+                            .getImageSuperResolutionAnalyzer(setting)
 
-    private fun processPlusModel(inputBitmap: Bitmap): Bitmap {
-        Log.d("EnhanceRepositoryImpl", "Processing with PLUS model")
-        return enhanceImage(inputBitmap, plusModel)
-    }
+                        val customResult = customAnalyzer.analyseFrame(frame)
+                        customAnalyzer.stop()
+                        customResult
+                    }
+                    EnhancementType.DEBLUR -> {
+                        // For demonstration, reuse the default 1x analyzer.
+                        analyzer.analyseFrame(frame)
+                    }
+                }
 
-    private fun processProModel(inputBitmap: Bitmap): Bitmap {
-        Log.d("EnhanceRepositoryImpl", "Processing with PRO model")
-        return enhanceImage(inputBitmap, proModel)
-    }
-
-    private fun processDeblurModel(inputBitmap: Bitmap): Bitmap {
-        Log.d("EnhanceRepositoryImpl", "Processing with DEBLUR model")
-        return enhanceImage(inputBitmap, deblurModel)
-    }
-
-    private fun enhanceImage(inputBitmap: Bitmap, model: Interpreter): Bitmap {
-        Log.d("EnhanceRepositoryImpl", "Starting enhancement using esrgan.tflite")
-
-        // Preprocess the input bitmap
-        val inputTensor = preprocessBitmap(inputBitmap)
-        Log.d("EnhanceRepositoryImpl", "Input tensor created with size: ${inputTensor.capacity()} bytes")
-
-        // Log input tensor details
-        val inputTensorShape = model.getInputTensor(0).shape()
-        Log.d("EnhanceRepositoryImpl", "Model input shape: ${inputTensorShape.contentToString()}")
-
-        // Log output tensor details
-        val outputTensorShape = model.getOutputTensor(0).shape()
-        val outputTensorSize = model.getOutputTensor(0).numBytes()
-        Log.d("EnhanceRepositoryImpl", "Model output shape: ${outputTensorShape.contentToString()}, size: $outputTensorSize bytes")
-
-        // Allocate output buffer dynamically
-        val outputBuffer = ByteBuffer.allocateDirect(outputTensorSize).apply {
-            order(ByteOrder.nativeOrder())
-        }
-        Log.d("EnhanceRepositoryImpl", "Output buffer created with size: $outputTensorSize bytes")
-
-        // Run inference
-        try {
-            model.run(inputTensor, outputBuffer)
-            Log.d("EnhanceRepositoryImpl", "Inference completed successfully using esrgan.tflite")
-        } catch (e: Exception) {
-            Log.e("EnhanceRepositoryImpl", "Error during inference", e)
-            throw e
-        }
-
-        // Postprocess the output buffer
-        return postprocessBitmap(outputBuffer, outputTensorShape[1], outputTensorShape[2])
-    }
-
-
-    private fun preprocessBitmap(bitmap: Bitmap): ByteBuffer {
-        val inputSize = 1 // Update to match the model's expected input size
-        val resizedBitmap = Bitmap.createScaledBitmap(bitmap, inputSize, inputSize, true)
-        val byteBuffer = ByteBuffer.allocateDirect(inputSize * inputSize * 3 * 4) // 3 channels (RGB), 4 bytes per float
-        byteBuffer.order(ByteOrder.nativeOrder())
-
-        for (y in 0 until inputSize) {
-            for (x in 0 until inputSize) {
-                val pixel = resizedBitmap.getPixel(x, y)
-                byteBuffer.putFloat((pixel shr 16 and 0xFF) / 255.0f) // Red
-                byteBuffer.putFloat((pixel shr 8 and 0xFF) / 255.0f)  // Green
-                byteBuffer.putFloat((pixel and 0xFF) / 255.0f)       // Blue
+                // 4) Extract the first MLImageSuperResolutionResult, or fallback to the original if empty.
+                if (results.size() > 0) {
+                    results.valueAt(0).bitmap
+                } else {
+                    inputBitmap // fallback if no results
+                }
+            } catch (e: MLException) {
+                throw Exception("Error processing image: ${e.message}", e)
+            } catch (e: Exception) {
+                throw Exception("Unexpected error: ${e.message}", e)
             }
         }
-        return byteBuffer
     }
 
-    private fun postprocessBitmap(byteBuffer: ByteBuffer, outputWidth: Int, outputHeight: Int): Bitmap {
-        byteBuffer.rewind()
-        val outputBitmap = Bitmap.createBitmap(outputWidth, outputHeight, Bitmap.Config.ARGB_8888)
+    override fun close() {
+        // Stop the default analyzer to free resources.
+        analyzer.stop()
+    }
 
-        for (y in 0 until outputHeight) {
-            for (x in 0 until outputWidth) {
-                val r = (byteBuffer.float * 255).toInt().coerceIn(0, 255)
-                val g = (byteBuffer.float * 255).toInt().coerceIn(0, 255)
-                val b = (byteBuffer.float * 255).toInt().coerceIn(0, 255)
+    /**
+     * Ensures that [bitmap]'s widest edge does not exceed [maxEdge].
+     * If it does, downscale proportionally. Otherwise returns the original.
+     *
+     * @param bitmap The original image.
+     * @param maxEdge The maximum allowed width or height (whichever is larger).
+     * @return A potentially downscaled Bitmap if the wide edge is > [maxEdge].
+     */
+    private fun ensureMaxEdge(bitmap: Bitmap, maxEdge: Int): Bitmap {
+        val width = bitmap.width
+        val height = bitmap.height
+        val largestEdge = maxOf(width, height)
 
-                // Debug raw RGB values
-                Log.d("PostprocessDebug", "Pixel($x, $y): R=$r, G=$g, B=$b")
-
-                val color = (0xFF shl 24) or (r shl 16) or (g shl 8) or b
-                outputBitmap.setPixel(x, y, color)
+        return if (largestEdge <= maxEdge) {
+            bitmap
+        } else {
+            // Downscale proportionally so the largest edge is exactly maxEdge
+            val scale = maxEdge.toFloat() / largestEdge.toFloat()
+            val matrix = Matrix().apply {
+                postScale(scale, scale)
             }
+            Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, /* filter= */ true)
         }
-
-        Log.d("EnhanceRepositoryImpl", "Postprocessed Bitmap created with dimensions: ${outputBitmap.width}x${outputBitmap.height}")
-        return outputBitmap
     }
-
 }

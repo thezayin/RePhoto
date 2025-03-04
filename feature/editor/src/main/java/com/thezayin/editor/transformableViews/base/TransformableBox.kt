@@ -1,0 +1,425 @@
+package com.thezayin.editor.transformableViews.base
+
+import android.content.res.Configuration
+import android.util.Log
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.OpenInFull
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.coerceIn
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
+import androidx.constraintlayout.compose.ConstraintLayout
+import com.thezayin.editor.transformableViews.TransformableTextBox
+import com.thezayin.editor.utils.drawMode.DrawModeUtils
+import com.thezayin.editor.utils.drawMode.pxToDp
+import com.thezayin.editor.utils.drawMode.toPx
+import com.thezayin.editor.utils.textMode.TextModeUtils.getDefaultEditorTextStyle
+
+@Composable
+fun TransformableBox(
+    modifier: Modifier = Modifier,
+    viewState: TransformableBoxState,
+    showBorderOnly: Boolean = false,
+    onEvent: (TransformableBoxEvents) -> Unit,
+    content: @Composable () -> Unit
+) {
+
+    val localDensity = LocalDensity.current
+    val isSelected = viewState.isSelected
+
+    val outerBoxModifier = modifier
+        .addTransformation(viewState, localDensity)
+    ConstraintLayout(
+        modifier = outerBoxModifier
+    ) {
+        val (btnClose, contentBox, btnScale) = createRefs()
+
+        CloseButton(
+            modifier = Modifier
+                .constrainAs(btnClose) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                },
+            viewState = viewState,
+            showBorderOnly = showBorderOnly,
+            onEvent = onEvent
+        )
+
+
+        var innerBoxModifier = Modifier.constrainAs(contentBox) {
+            top.linkTo(btnClose.bottom)
+            start.linkTo(btnClose.end)
+            end.linkTo(btnScale.start)
+            bottom.linkTo(btnScale.top)
+        }
+
+        if (isSelected) {
+            // we need to keep the border width similar regardless the scale (zoom)
+            val borderStrokeWidth = 1.dp.toPx() / viewState.scale
+            val borderColor = if (showBorderOnly) Color.White else Color.Transparent
+            innerBoxModifier = innerBoxModifier.dashedBorder(
+                strokeWidthInPx = borderStrokeWidth,
+                color = borderColor,
+                cornerRadiusDp = 0.dp,
+                isDashedBorder = true,
+                dashOnOffSizePair = Pair(2.dp.toPx(), 2.dp.toPx())
+            )
+        }
+
+        // We need size of the box which has actual content
+        if (showBorderOnly.not()) {
+            innerBoxModifier = innerBoxModifier.onGloballyPositioned {
+                val innerBoxSize = it.size.toSize()
+                // Update the box size only if required
+                // Without below condition, it'll cause a continuous recomposition in loop
+                if (viewState.innerBoxSize != innerBoxSize) {
+                    onEvent(
+                        TransformableBoxEvents.UpdateBoxBorder(
+                            id = viewState.id,
+                            innerBoxSize = innerBoxSize,
+                        )
+                    )
+                }
+            }
+        }
+
+        val innerBoxPaddingHorizontal = (8.dp / viewState.scale)
+        val innerBoxPaddingVertical = (4.dp / viewState.scale)
+        Box(
+            modifier = innerBoxModifier
+                .detectGestures(viewState, onEvent)
+                .detectTap(viewState, onEvent)
+                .padding(
+                    horizontal = innerBoxPaddingHorizontal,
+                    vertical = innerBoxPaddingVertical
+                )
+        ) {
+            // If this box is for purpose of border only, then make an empty box
+            if (showBorderOnly) {
+                EmptyBoxWithSize(viewState.innerBoxSize)
+            } else {
+                content()
+            }
+        }
+
+        ScaleButton(
+            modifier = Modifier
+                .constrainAs(btnScale) {
+                    end.linkTo(parent.end)
+                    bottom.linkTo(parent.bottom)
+                },
+            viewState = viewState,
+            showBorderOnly = showBorderOnly,
+            onEvent = onEvent
+        )
+    }
+}
+
+/**
+ * This empty box helps us to maintain a consistent size of content and border regardless
+ * of the size of their parent.
+ * ---------- explanation below ----------
+ * we draw the content in inner box and the border in outer box in the TextModeScreen
+ * and this causes the inner item to have less width and outer item(border only) to be wider
+ * which results in inner item (text) to be of 2 lines but outer item (border only) to be of 1 line height
+ */
+@Composable
+fun EmptyBoxWithSize(boxSize: Size) {
+    Box(
+        modifier = Modifier
+            .size(
+                width = boxSize.width.pxToDp(),
+                height = boxSize.height.pxToDp(),
+            )
+            .background(Color.Transparent)
+    ) {}
+}
+
+@Composable
+fun CloseButton(
+    modifier: Modifier,
+    viewState: TransformableBoxState,
+    showBorderOnly: Boolean,
+    onEvent: (TransformableBoxEvents) -> Unit
+) {
+    val btnAlpha = if (showBorderOnly) 1f else 0f
+    val bgColor = if (showBorderOnly) MaterialTheme.colorScheme.onBackground else Color.Transparent
+    val iconTintColor = MaterialTheme.colorScheme.background
+    val btnOffset = (4.dp * viewState.scale).coerceIn(4.dp, 10.dp)
+
+    Image(
+        modifier = modifier
+            .offset(
+                x = btnOffset,
+                y = btnOffset
+            )
+            .size(28.dp)
+            .scale(1 / viewState.scale) /* to keep the size of button constant */
+            .clip(CircleShape)
+            .background(bgColor)
+            .alpha(btnAlpha)
+            .clickable {
+                onEvent(
+                    TransformableBoxEvents.OnCloseClicked(viewState.id)
+                )
+            },
+        imageVector = Icons.Default.Close,
+        contentScale = ContentScale.FillBounds,
+        contentDescription = null,
+        colorFilter = ColorFilter.tint(
+            color = iconTintColor
+        )
+    )
+}
+
+@Composable
+fun ScaleButton(
+    modifier: Modifier,
+    viewState: TransformableBoxState,
+    showBorderOnly: Boolean,
+    onEvent: (TransformableBoxEvents) -> Unit
+) {
+    val btnAlpha = if (showBorderOnly) 1f else 0f
+    val bgColor = if (showBorderOnly) MaterialTheme.colorScheme.onBackground else Color.Transparent
+    val iconTintColor = MaterialTheme.colorScheme.background
+    val btnOffset = (4.dp * viewState.scale).coerceIn(4.dp, 10.dp)
+
+    Image(
+        modifier = modifier
+            .offset(
+                x = -btnOffset,
+                y = -btnOffset
+            )
+            .size(28.dp)
+            .scale(1 / viewState.scale) /* to keep the size of button constant */
+            .clip(CircleShape)
+            .background(bgColor)
+            .rotate(80f)
+            .alpha(btnAlpha)
+            .pointerInput(Unit) {
+                detectDragGestures { change, dragAmount ->
+                    Log.e(
+                        "TEST_SCALE",
+                        "ScaleButton: dragDistance = ${dragAmount.getDistance() / viewState.scale}, dragAmount = $dragAmount"
+                    )
+
+                    /**
+                     *
+                     * think about some logic to get the appropriate zoom amount
+                     *  according the drag direction and distance
+                     *  => x and y both positive = zoom out
+                     *  => x and y both negative = zoom in
+                     *  => else = ignore
+                     *
+                     *
+                     *
+                     */
+
+                }
+            },
+        imageVector = Icons.Default.OpenInFull,
+        contentScale = ContentScale.Inside,
+        contentDescription = null,
+        colorFilter = ColorFilter.tint(
+            color = iconTintColor
+        )
+    )
+}
+
+
+fun Modifier.addTransformation(
+    viewState: TransformableBoxState,
+    localDensity: Density
+): Modifier = run {
+    this.then(
+        Modifier
+            .offset(
+                (viewState.positionOffset.x / localDensity.density).dp,
+                (viewState.positionOffset.y / localDensity.density).dp,
+            )
+            .scale(viewState.scale)
+            .rotate(viewState.rotation)
+
+    )
+}
+
+
+fun Modifier.detectTap(
+    viewState: TransformableBoxState,
+    onEvent: (TransformableBoxEvents) -> Unit
+): Modifier = run {
+    this.then(
+        Modifier.pointerInput(Unit) {
+            detectTapGestures {
+                Log.e("TEST_TransformBox", "detectTouch: TAPPED")
+                onEvent(
+                    TransformableBoxEvents.OnTapped(
+                        id = viewState.id, textViewState = null
+                    )
+                )
+            }
+        }
+    )
+}
+
+fun Modifier.detectGestures(
+    viewState: TransformableBoxState,
+    onEvent: (TransformableBoxEvents) -> Unit,
+): Modifier = run {
+    this.then(
+        Modifier.pointerInput(Unit) {
+            detectTransformGestures { centroid, pan, zoom, rotationChange ->
+                Log.e(
+                    "TEST_TransformBox", "DraggableParentView: " +
+                            "\ncentroid: $centroid" +
+                            "\npan: $pan" +
+                            "\nzoom: $zoom" +
+                            "\nrotation: $rotationChange"
+                )
+
+                if (viewState.isSelected) {
+                    val dragAmount = pan * viewState.scale
+                    val rotatedDragAmount =
+                        DrawModeUtils.rotateOffset(dragAmount, viewState.rotation)
+                    onEvent(
+                        TransformableBoxEvents.UpdateTransformation(
+                            id = viewState.id,
+                            dragAmount = rotatedDragAmount,
+                            zoomAmount = zoom,
+                            rotationChange = rotationChange
+                        )
+                    )
+                }
+
+            }
+        }
+    )
+}
+
+@Composable
+fun Modifier.dashedBorder(
+    strokeWidthInPx: Float,
+    color: Color,
+    cornerRadiusDp: Dp,
+    isDashedBorder: Boolean = false,
+    dashOnOffSizePair: Pair<Float, Float> = Pair(10f, 10f)
+) = composed(
+    factory = {
+        val density = LocalDensity.current
+        val cornerRadiusPx = density.run { cornerRadiusDp.toPx() }
+
+        this.then(
+            Modifier.drawWithCache {
+                onDrawBehind {
+                    val stroke = Stroke(
+                        width = strokeWidthInPx,
+                        pathEffect = if (isDashedBorder) {
+                            PathEffect.dashPathEffect(
+                                intervals = floatArrayOf(
+                                    dashOnOffSizePair.first,
+                                    dashOnOffSizePair.second
+                                ),
+                                phase = 0f
+                            )
+                        } else null
+                    )
+
+                    drawRoundRect(
+                        color = color,
+                        style = stroke,
+                        cornerRadius = CornerRadius(cornerRadiusPx)
+                    )
+                }
+            }
+        )
+    }
+)
+
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun PreviewTextItem_NO_BORDER() {
+    Box(
+        modifier = Modifier
+            .size(300.dp, 100.dp)
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        TransformableTextBox(
+            viewState = TransformableTextBoxState(
+                id = "",
+                text = "Hello",
+                textAlign = TextAlign.Center,
+                positionOffset = Offset(100f, 100f),
+                scale = 1f,
+                rotation = 0f,
+                textColor = MaterialTheme.colorScheme.onBackground,
+                textFont = getDefaultEditorTextStyle().fontSize // defaultTextFont in "TextModeScreen"
+            ),
+            onEvent = {},
+        )
+    }
+}
+
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun PreviewTextItem_WITH_BORDER() {
+    Box(
+        modifier = Modifier
+            .size(300.dp, 100.dp)
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        val viewState = TransformableTextBoxState(
+            id = "",
+            text = "Hello",
+            textAlign = TextAlign.Center,
+            positionOffset = Offset(100f, 100f),
+            scale = 1f,
+            rotation = 0f,
+            textColor = MaterialTheme.colorScheme.onBackground,
+            textFont = getDefaultEditorTextStyle().fontSize // defaultTextFont in "TextModeScreen"
+        )
+        TransformableTextBox(
+            viewState = viewState,
+            onEvent = {},
+        )
+        TransformableTextBox(
+            viewState = viewState,
+            showBorderOnly = true,
+            onEvent = {},
+        )
+    }
+}

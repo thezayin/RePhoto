@@ -16,7 +16,7 @@ android {
     compileSdk = libs.versions.compileSdkVersion.get().toInt()
 
     defaultConfig {
-        applicationId = "com.thezayin.datemate"
+        applicationId = "com.thezayin.rephoto"
         minSdk = libs.versions.minSdkVersion.get().toInt()
         targetSdk = libs.versions.targetSdkVersion.get().toInt()
         versionCode = 1
@@ -55,6 +55,7 @@ dependencies {
 
     implementation(project(":gallery:presentation"))
     implementation(project(":start-up"))
+    implementation(project(":feature:editor"))
     implementation(project(":feature:enhance"))
     implementation(project(":feature:background"))
     implementation(project(":feature:background-blur"))

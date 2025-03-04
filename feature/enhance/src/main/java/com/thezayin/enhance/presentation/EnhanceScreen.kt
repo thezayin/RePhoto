@@ -21,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.thezayin.enhance.presentation.event.EnhanceEvent
 import org.koin.compose.koinInject
@@ -44,6 +45,9 @@ fun EnhanceScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
+
+
+            
             when {
                 state.isLoading -> {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -69,7 +73,8 @@ fun EnhanceScreen(
                             contentDescription = "Enhanced Image",
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(300.dp)
+                                .height(300.dp),
+                            contentScale = ContentScale.Fit
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         EnhancementButtons(
@@ -91,7 +96,7 @@ fun EnhanceScreen(
                             contentDescription = "Enhance Plus Image",
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(300.dp)
+                                .fillMaxSize()
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         EnhancementButtons(

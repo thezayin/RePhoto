@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.thezayin.domain.usecase.AlbumsUseCase
 import com.thezayin.domain.usecase.ImagesUseCase
+import com.thezayin.framework.session.EditingSessionManager
 import com.thezayin.framework.session.SessionManager
 import com.thezayin.framework.utils.Response
 import com.thezayin.presentation.event.GalleryEvent
@@ -18,7 +19,8 @@ import kotlinx.coroutines.launch
 class GalleryViewModel(
     private val albumsUseCase: AlbumsUseCase,
     private val imagesUseCase: ImagesUseCase,
-    private val sessionManager: SessionManager
+    private val sessionManager: SessionManager,
+    private val editingSessionManager: EditingSessionManager
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(GalleryState())

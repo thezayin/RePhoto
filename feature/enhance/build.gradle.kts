@@ -1,11 +1,10 @@
-import org.gradle.internal.declarativedsl.parsing.main
-
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ksp)
     id("kotlin-kapt")
+    id ("com.huawei.agconnect")
 }
 
 android {
@@ -85,10 +84,19 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.timber)
 
-    implementation (libs.coil.compose)
+    implementation(libs.coil.compose)
     implementation(libs.accompanist.permissions)
 
     implementation(libs.sdp.compose)
-    implementation (libs.tensorflow.lite)
+    implementation(libs.tensorflow.lite)
     implementation(libs.tensorflow.lite.gpu)
+    // Import the base SDK.
+    implementation ("com.huawei.hms:ml-computer-vision-imagesuperresolution:3.11.0.301")
+    implementation ("com.huawei.hms:hmscoreinstaller:6.11.0.302")
+    // Import the image super-resolution model package.
+    implementation ("com.huawei.hms:ml-computer-vision-imagesuperresolution-model:3.11.0.301")
+
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.9.0")
+
 }

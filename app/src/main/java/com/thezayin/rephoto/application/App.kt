@@ -8,6 +8,7 @@ import com.thezayin.background_blur.di.blurModule
 import com.thezayin.background_changer.di.backgroundChangerModule
 import com.thezayin.background_remover.di.backgroundRemoverModule
 import com.thezayin.di.analyticsModule
+import com.thezayin.editor.di.editorModule
 import com.thezayin.enhance.presentation.di.enhanceModule
 import com.thezayin.framework.di.featureModule
 import com.thezayin.framework.notification.NotificationUtil
@@ -37,6 +38,7 @@ class App : Application() {
                 backgroundModule,
                 backgroundRemoverModule,
                 backgroundChangerModule,
+                editorModule
             )
         }
     }

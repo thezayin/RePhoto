@@ -1,14 +1,15 @@
 [versions]
-coilCompose = "2.6.0"
+
 compileSdkVersion = "35"
+minSdkVersion = "24"
+targetSdkVersion = "34"
+
 gpuimage = "2.1.0"
 gson = "2.10.1"
 image = "1.0.0-beta1"
 kotlinxCoroutinesPlayServices = "1.9.0"
-minSdkVersion = "24"
 playServicesMlkitSubjectSegmentation = "16.0.0-beta1"
-targetSdkVersion = "34"
-
+coilCompose = "2.6.0"
 grizzly = "2.1"
 multidex = "2.0.1"
 agp = "8.5.2"
@@ -58,6 +59,12 @@ accompanistPermissions = "0.30.1"
 firebaseStorageKtx = "21.0.1"
 firebaseConfigKtx = "22.0.1"
 volley = "1.2.1"
+constraintlayoutComposeAndroid = "1.1.0"
+
+androidImageCropper = "4.5.0"
+cloudy = "0.1.2"
+colorpicker = "1.0.0"
+composeScreenshot = "1.0.3"
 
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
@@ -136,7 +143,11 @@ firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage
 firebase-config-ktx = { group = "com.google.firebase", name = "firebase-config-ktx", version.ref = "firebaseConfigKtx" }
 volley = { group = "com.android.volley", name = "volley", version.ref = "volley" }
 tensorflow-lite-gpu = { module = "org.tensorflow:tensorflow-lite-gpu", version.ref = "tensorflowLite" }
-
+androidx-constraintlayout-compose-android = { group = "androidx.constraintlayout", name = "constraintlayout-compose-android", version.ref = "constraintlayoutComposeAndroid" }
+cloudy = { module = "com.github.skydoves:cloudy", version.ref = "cloudy" }
+colorpicker = { module = "io.mhssn:colorpicker", version.ref = "colorpicker" }
+compose-screenshot = { module = "com.github.SmartToolFactory:Compose-Screenshot", version.ref = "composeScreenshot" }
+android-image-cropper = { module = "com.vanniktech:android-image-cropper", version.ref = "androidImageCropper" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

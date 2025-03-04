@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SIM Insights</string>
+    <string name="app_name">RePhoto</string>
     <string name="ads_title">ad</string>
     <string name="ad">Ad</string>
     <string name="save">Save</string>
@@ -79,6 +79,60 @@
 
     <string name="edge_smoothness_label">Edge Smoothness: %1$d</string>
     <string name="blur_intensity_label">Blur Intensity: %1$d</string>
+
+    <string name="color">Color</string>
+    <string name="format">Format</string>
+    <string name="font">Font</string>
+    <string name="brush">Brush</string>
+    <string name="pan">Pan</string>
+    <string name="zoom">Zoom</string>
+    <string name="shape">Shape</string>
+    <string name="eraser">Eraser</string>
+    <string name="crop">Crop</string>
+    <string name="draw">Draw</string>
+    <string name="text">Text</string>
+    <string name="effects">Effects</string>
+    <string name="width">Width</string>
+    <string name="opacity">Opacity</string>
+    <string name="done">Done</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="enter_your_text">Enter your text</string>
+
+    <string name="pick_image">Pick Image</string>
+    <string name="capture_image">Capture Image</string>
+
+    <string name="saving_image">Saving Image</string>
+    <string name="image_saved_successfully">Image Saved Successfully</string>
+    <string name="failed_to_save_image">Failed to save image</string>
+
+    <string name="permission_required">Permission Required</string>
+    <string name="grant_permission">Grant Permission</string>
+    <string name="okay">Okay</string>
+    <string name="storage_permission_rationale">This app needs storage permission to be able to save the edited media files in your device.</string>
+    <string name="storage_permission_permanently_declined">It seems you permanently declined storage permission. You can grant it in app settings.</string>
+    <string name="following_permissions_are_required">Following permissions are required to perform this action:\n</string>
+    <string name="perm_item_storage">- Storage\n</string>
+    <string name="app_not_found">App not found</string>
+    <string name="fail_to_insert_uri_in_content_resolver">Couldn\'t insert uri in content resolver</string>
+    <string name="enter_aspect_ratio">Enter Aspect Ratio</string>
+    <string name="x">X</string>
+    <string name="y">Y</string>
+    <string name="select">Select</string>
+    <string name="not_a_valid_number">Not a valid number</string>
+    <string name="fields_cannot_be_empty">Fields cannot be empty</string>
+    <string name="ratio_lesser_than_minimum">Ratio is lesser than minimum allowed</string>
+    <string name="ratio_greater_than_minimum">Ratio is greater than maximum allowed</string>
+
+    <!-- Confirmation Dialog Strings -->
+    <string name="exit_editor_title">Exit Editor</string>
+    <string name="exit_editor_message">Are you sure you want to exit the editor? Your changes will be lost.</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Toast Messages -->
+    <string name="image_shared_successfully">Image shared successfully.</string>
+    <string name="failed_to_share_image">Failed to share the image.</string>
+    <string name="failed_to_load_image">Failed to load the image.</string>
 
     <string-array name="loading_steps">
         <item>AI is analyzing the image…</item>

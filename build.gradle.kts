@@ -6,6 +6,7 @@ buildscript {
         classpath(libs.firebase.crashlytics.gradle)
         classpath(libs.perf.plugin)
         classpath(libs.firebase.appdistribution.gradle)
+        classpath ("com.huawei.agconnect:agcp:1.9.1.300")
     }
 }
 

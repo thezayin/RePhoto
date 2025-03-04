@@ -11,7 +11,7 @@ pluginManagement {
         jcenter()
         gradlePluginPortal()
         maven { url = uri("https://jitpack.io") }
-        maven { url =uri("https://art-prod.img.ly/artifactory/imgly") }
+        maven { url= uri("https://developer.huawei.com/repo/") }
     }
 }
 dependencyResolutionManagement {
@@ -21,7 +21,7 @@ dependencyResolutionManagement {
         mavenCentral()
         jcenter()
         maven { url = uri("https://jitpack.io") }
-        maven { url =uri("https://art-prod.img.ly/artifactory/imgly") }
+        maven { url= uri("https://developer.huawei.com/repo/") }
     }
 }
 

@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:505990540703:android:00451a42b7e15dfc3921aa",
+        "mobilesdk_app_id": "1:505990540703:android:4d01af81f3b02a503921aa",
         "android_client_info": {
-          "package_name": "com.thezayin.datemate"
+          "package_name": "com.thezayin.rephoto"
         }
       },
       "oauth_client": [],

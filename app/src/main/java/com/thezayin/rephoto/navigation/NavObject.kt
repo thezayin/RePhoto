@@ -23,9 +23,30 @@ object OnBoardingScreenNav
 @Serializable
 object BackgroundRemoverScreenNav
 
-
 @Serializable
 object BackgroundChangerScreenNav
 
 @Serializable
 object BackgroundBlurScreenNav
+
+@Serializable
+object EditorScreenNav
+
+@Serializable
+object CropperScreenNav
+
+@Serializable
+object DrawModeScreenNav
+
+@Serializable
+object TextScreenNav
+
+@Serializable
+object FiltersScreenNav
+
+@Serializable
+object ImageEditScreenNav
+
+// Module's Additional Destinations
+@Serializable
+object EffectsModeScreenNav

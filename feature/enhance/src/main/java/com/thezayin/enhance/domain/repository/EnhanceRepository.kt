@@ -14,4 +14,5 @@ interface EnhanceRepository {
      * @throws Exception For any processing errors.
      */
     suspend fun processImage(inputBitmap: Bitmap, type: EnhancementType): Bitmap
+    fun close()
 }
